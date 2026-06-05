@@ -8,5 +8,5 @@ import { RouterOutlet, RouterLink } from '@angular/router';
   styleUrl: './app.scss'
 })
 export class App {
-  protected readonly title = signal('ias-spring-board');
+  protected readonly title = signal('ias-sprint-board');
 }
