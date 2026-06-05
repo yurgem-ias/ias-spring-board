@@ -1,0 +1,161 @@
+@if (loading()) {
+  <div class="loading-form" aria-live="polite" aria-busy="true">
+    <div class="spinner" aria-hidden="true"></div>
+    <p>Cargando información de la tarea...</p>
+  </div>
+} @else {
+  <div class="form-card">
+    <div class="header-actions">
+      <a [routerLink]="isEditMode() ? ['/tasks', taskId()] : ['/tasks']" class="back-btn" aria-label="Cancelar y regresar">
+        Cancelar y volver
+      </a>
+    </div>
+
+    <h2 id="form-heading"> {{ isEditMode() ? 'Editar Tarea' : 'Crear nueva tarea' }} </h2>
+
+    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" aria-labelledby="form-heading">
+      <div class="form-group" [class.has-error]="isFieldInvalid('title')">
+        <label for="title-input">Título de la Tarea*</label>
+        <input
+        type="text"
+        id="title-input"
+        formControlName="title"
+        placeholder="Escriba el título de la tarea"
+        [attr.aria-invalid]="isFieldInvalid('title')"
+        [attr.aria-describedby]="isFieldInvalid('title') ? 'title-error' : null"
+        >
+        @if (isFieldInvalid('title')) {
+          <span id="title-error" class="error-msg" role="alert">
+            {{ getFieldError('title') }}
+          </span>
+        }
+      </div>
+
+      <div class="form-group" [class.has-error]="isFieldInvalid('description')">
+        <label for="description-input">Descripción de la tarea*</label>
+        <textarea
+        id="description-input"
+        formControlName="description"
+        placeholder="Describa el objetivo y alcance de esta tarea"
+        [attr.aria-invalid]="isFieldInvalid('description')"
+        [attr.aria-describedby]="isFieldInvalid('description') ? 'description-error' : null"
+        ></textarea>
+        @if (isFieldInvalid('description')) {
+          <span id="description-error" class="error-msg" role="alert">
+            {{ getFieldError('description') }}
+          </span>
+        }
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+        <div class="form-group" [class.has-error]="isFieldInvalid('status')">
+          <label for="status-select">Estado*</label>
+          <select
+            id="status-select"
+            formControlName="status"
+            [attr.aria-invalid]="isFieldInvalid('status')"
+            [attr.aria-describedby]="isFieldInvalid('status') ? 'status-error' : null"
+            >
+              <option value="todo">Pendiente (TO DO)</option>
+              <option value="in-progress">En progreso</option>
+              <option value="blocked">Bloqueado</option>
+              <option value="done">Terminado</option>
+          </select>
+          @if (isFieldInvalid('status')) {
+            <span id="status" class="error-msg" role="alert">
+            {{ getFieldError('status') }}
+          </span>
+          }
+        </div>
+
+        <div class="form-group" [class.has-error]="isFieldInvalid('priority')">
+          <label for="priority-select">Prioridad*</label>
+          <select
+            id="priority-select"
+            formControlName="priority"
+            [attr.aria-invalid]="isFieldInvalid('priority')"
+            [attr.aria-describedby]="isFieldInvalid('priority') ? 'priority-error' : null"
+            >
+              <option value="low">Baja</option>
+              <option value="medium">Media</option>
+              <option value="high">Alta</option>
+              <option value="critical">Crítica</option>
+          </select>
+          @if (isFieldInvalid('priority')) {
+            <span id="priority" class="error-msg" role="alert">
+            {{ getFieldError('priority') }}
+          </span>
+          }
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+        <div class="form-group" [class.has-error]="isFieldInvalid('assignee')">
+          <label for="assignee-input">Responsable*</label>
+          <input
+            id="assignee-input"
+            type="text"
+            formControlName="assignee"
+            placeholder="Nombre de la persona asignada"
+            [attr.aria-invalid]="isFieldInvalid('assignee')"
+            [attr.aria-describedby]="isFieldInvalid('assignee') ? 'assignee-error' : null"
+            >
+          @if (isFieldInvalid('assignee')) {
+            <span id="assignee" class="error-msg" role="alert">
+            {{ getFieldError('assignee') }}
+          </span>
+          }
+        </div>
+
+        <div class="form-group" [class.has-error]="isFieldInvalid('dueDate')">
+          <label for="duedate-input">Fecha Límite*</label>
+          <input
+            id="duedate-input"
+            type="date"
+            formControlName="dueDate"
+            [attr.aria-invalid]="isFieldInvalid('dueDate')"
+            [attr.aria-describedby]="isFieldInvalid('dueDate') ? 'duedate-error' : null"
+            >
+          @if (isFieldInvalid('dueDate')) {
+            <span id="duedate-error" class="error-msg" role="alert">
+            {{ getFieldError('dueDate') }}
+          </span>
+          }
+        </div>
+      </div>
+
+       <div class="form-group">
+          <label for="tags-input">Etiquetas (separadas por comas)</label>
+          <input
+            id="tags-input"
+            type="text"
+            formControlName="tagsInput"
+            placeholder="ej. ui, frontend, base-datos"
+            aria-describedby="tags-helper"
+            >
+          <span id="tags-helper" style="font-size: 0.75rem; color: var(--text-muted);">
+            Las etiquetas se normalizarán a minúsculas y se eliminarán duplicados automáticamente.
+          </span>
+        </div>
+
+        <div class="form-actions">
+          <a
+          [routerLink]="isEditMode() ? ['/tasks', taskId()] : ['/tasks']"
+          class="btn btn-secondary"
+          [class.disabled]="saving()"
+          >
+          Cancelar
+        </a>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="taskForm.invalid || saving()"
+          [attr.aria-label]="isEditMode() ? 'Guardar cambios de la tarea' : 'Crear nueva tarea'"
+        >
+          {{ saving() ? 'Guardando...' : (isEditMode() ? 'Guardar Cambios' : 'Crear Tarea') }}
+        </button>
+        </div>
+
+    </form>
+  </div>
+}
