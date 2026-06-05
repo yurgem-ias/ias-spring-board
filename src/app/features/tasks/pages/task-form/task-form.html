@@ -1,13 +1,13 @@
 @if (loading()) {
   <div class="loading-form" aria-live="polite" aria-busy="true">
     <div class="spinner" aria-hidden="true"></div>
-    <p>Cargando informacion de la tarea ...</p>
+    <p>Cargando información de la tarea...</p>
   </div>
 } @else {
   <div class="form-card">
     <div class="header-actions">
       <a [routerLink]="isEditMode() ? ['/tasks', taskId()] : ['/tasks']" class="back-btn" aria-label="Cancelar y regresar">
-        &larr; Cancelar y volver
+        Cancelar y volver
       </a>
     </div>
 
@@ -15,12 +15,12 @@
 
     <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" aria-labelledby="form-heading">
       <div class="form-group" [class.has-error]="isFieldInvalid('title')">
-        <label for="title-input">Titulo de la Tarea*</label>
+        <label for="title-input">Título de la Tarea*</label>
         <input
         type="text"
         id="title-input"
         formControlName="title"
-        placeholder="Escriba el titulo de la tarea"
+        placeholder="Escriba el título de la tarea"
         [attr.aria-invalid]="isFieldInvalid('title')"
         [attr.aria-describedby]="isFieldInvalid('title') ? 'title-error' : null"
         >
@@ -32,7 +32,7 @@
       </div>
 
       <div class="form-group" [class.has-error]="isFieldInvalid('description')">
-        <label for="description-input">Deswcripcion de la tarea</label>
+        <label for="description-input">Descripción de la tarea*</label>
         <textarea
         id="description-input"
         formControlName="description"
@@ -79,7 +79,7 @@
               <option value="low">Baja</option>
               <option value="medium">Media</option>
               <option value="high">Alta</option>
-              <option value="critical">Critica</option>
+              <option value="critical">Crítica</option>
           </select>
           @if (isFieldInvalid('priority')) {
             <span id="priority" class="error-msg" role="alert">
@@ -108,7 +108,7 @@
         </div>
 
         <div class="form-group" [class.has-error]="isFieldInvalid('dueDate')">
-          <label for="duedate-input">Fecha Limite*</label>
+          <label for="duedate-input">Fecha Límite*</label>
           <input
             id="duedate-input"
             type="date"
@@ -134,7 +134,7 @@
             aria-describedby="tags-helper"
             >
           <span id="tags-helper" style="font-size: 0.75rem; color: var(--text-muted);">
-            Las etiquetas se normalizaran a minusculas y se eliminaran duplicados automaticamente.
+            Las etiquetas se normalizarán a minúsculas y se eliminarán duplicados automáticamente.
           </span>
         </div>
 
@@ -142,7 +142,7 @@
           <a
           [routerLink]="isEditMode() ? ['/tasks', taskId()] : ['/tasks']"
           class="btn btn-secondary"
-          [class.disabked]="saving()"
+          [class.disabled]="saving()"
           >
           Cancelar
         </a>

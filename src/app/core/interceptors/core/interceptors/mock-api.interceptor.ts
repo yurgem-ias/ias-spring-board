@@ -9,21 +9,21 @@ const INITIAL_TASKS: SprintTask[] = [
   {
     id: 'TASK-01',
     title: 'Crear layout del dashboard',
-    description: 'Definir estructura visual y navegacion principal utilizando componentes standalone y valiables CSS.',
+    description: 'Definir estructura visual y navegación principal utilizando componentes standalone y variables CSS.',
     status: 'in-progress',
     priority: 'high',
     assignee: 'Andrea Puerta',
     dueDate: '2026-06-10',
-    tags: ['ui', 'dahsboard'],
+    tags: ['ui', 'dashboard'],
     createdAt: '2026-06-01',
     updatedAt: '2026-06-02'
   }, {
     id: 'TASK-02',
-    title: 'Conectar service de tareas',
+    title: 'Conectar servicio de tareas',
     description: 'Implementar capa HTTP tipada con mnanejo de errores y pruebas unitarias de integracion.',
     status: 'todo',
     priority: 'critical',
-    assignee: 'Carlos Martines',
+    assignee: 'Carlos Martinez',
     dueDate: '2026-06-08',
     tags: ['http', 'architecture'],
     createdAt: '2026-06-01',
@@ -36,9 +36,42 @@ const INITIAL_TASKS: SprintTask[] = [
     priority: 'medium',
     assignee: 'Yurgen Prado',
     dueDate: '2026-06-15',
-    tags: ['http', 'architecture'],
+    tags: ['database', 'architecture'],
     createdAt: '2026-06-01',
     updatedAt: '2026-06-04'
+  },{
+    id: 'TASK-04',
+    title: 'Configurar suite de pruebas',
+    description: 'Configurar entorno de testing unitario y de integración para los componentes standalone.',
+    status: 'done',
+    priority: 'low',
+    assignee: 'Ana Prado',
+    dueDate: '2026-06-05',
+    tags: ['testing', 'quality'],
+    createdAt: '2026-06-01',
+    updatedAt: '2026-06-04'
+  },{
+    id: 'TASK-05',
+    title: 'Refactorizar formularios reactivos',
+    description: 'Migrar a formularios reactivos tipados y aplicar validaciones personalizadas de fecha.',
+    status: 'todo',
+    priority: 'medium',
+    assignee: 'Andrea Prado',
+    dueDate: '2026-06-12',
+    tags: ['refactor', 'forms'],
+    createdAt: '2026-06-01',
+    updatedAt: '2026-06-04'
+  },{
+    id: 'TASK-06',
+    title: 'Auditoría de seguridad básica',
+    description: 'Validar saneamiento de entradas, evitar innerHTML e implementar buenas prácticas de seguridad en angular',
+    status: 'done',
+    priority: 'high',
+    assignee: 'Camilo Prado',
+    dueDate: '2026-06-07',
+    tags: ['security'],
+    createdAt: '2026-06-04',
+    updatedAt: '2026-06-05'
   }
 ]
 

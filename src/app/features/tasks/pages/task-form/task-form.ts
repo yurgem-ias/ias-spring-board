@@ -5,13 +5,11 @@ import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/r
 import { TaskStore } from '../../../../core/state/task.store';
 import { TaskApiService } from '../../../../core/services/task-api.service';
 
-export function dateMinTodayValidator(): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
+export const dateMinTodayValidator: ValidatorFn =(control: AbstractControl): ValidationErrors | null => {
     if (!control.value) return null
-    const todayStr = new Date().toISOString().split('t')[0]
+    const todayStr = new Date().toISOString().split('T')[0]
     return control.value < todayStr ? { pastDate: true} : null
   }
-}
 
 interface TaskFormGroup {
   title: FormControl<string>
@@ -140,7 +138,7 @@ export class TaskForm implements OnInit {
   if (!control || !control.errors) return ''
 
   if (control.errors['required']) {
-    return 'Exte campo es obligatorio'
+    return 'Este campo es obligatorio'
   }
   if (control.errors['minlength']) {
     return `Debe tener al menos ${control.errors['minlength'].requiredLength} caracteres`
@@ -149,9 +147,9 @@ export class TaskForm implements OnInit {
     return `No puede superar los ${control.errors['maxlength'].requiredLength} caracteres`
   }
     if (control.errors['pastDate']) {
-    return `La fecha limite no puede ser anterior a la fecha actual.`
+    return `La fecha límite no puede ser anterior a la fecha actual.`
   }
 
-  return 'Campo invalido.'
+  return 'Campo inválido.'
  }
 }
