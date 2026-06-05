@@ -1,0 +1,91 @@
+@if (loading()) {
+  <div class="loading-detail" aria-live="polite" aria-busy="true">
+    <div class="spinner" aria-hidden="true"></div>
+    <p>Cargando informacion de la tarea...</p>
+  </div>
+} @else if (error()) {
+  <div class="task-detail-card" role="alert" style="border-color: rgba(239, 68, 68, 0.2);">
+    <div class="header-actions">
+      <a routerLink="/tasks" class="back-btn" aria-label="Volver al dashboard">
+        Volver al dashboard
+      </a>
+    </div>
+    <div style="text-align: center; padding: 2rem 0;">
+      <h3 style="color: rgb(168, 2, 2); margin-bottom: 1rem; font-family: var(--font-family-title);">Error</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 2rem;">{{ error() }}</p>
+      <a routerLink="/tasks" class="btn btn-primary" aria-label="Volver al inicio">Ir al dashboard</a>
+    </div>
+  </div>
+} @else if (task(); as activeTask) {
+  <article class="task-detail-card" [attr.aria-labelledby]="'task-title-' + activeTask.id">
+    <div class="header-actions">
+      <a routerLink="/tasks" class="back-btn" aria-label="Volver al dashboard de tareas">
+        Volver al dashboard
+      </a>
+      <a [routerLink]="['/tasks', activeTask.id, 'edit']" class="btn btn-primary" [attr.aria-label]="'Editar la tarea' + activeTask.id">
+        Editar tarea
+      </a>
+    </div>
+
+    <header class="title-section">
+      <span class="task-id-badge">{{ activeTask.id }}</span>
+      <h2 [id]="'task-title-' + activeTask.id"> {{ activeTask.title }}</h2>
+    </header>
+
+    <section class="meta-grid" aria-label="Detalles de asignacion y estado">
+      <div class="meta-item">
+        <span class="label">Estado</span>
+        <span class="value">
+          <span class="badge" [class]="'badge-' + activeTask.status.replace('-','')">
+            {{ activeTask.status === 'todo' ? 'Pendiente' : activeTask.status === 'in-progress' ? 'En progreso' : activeTask.status === 'blocked' ? 'Bloqueada' : 'Finalizada' }}
+          </span>
+        </span>
+      </div>
+
+      <div class="meta-item">
+        <span class="label">Prioridad</span>
+        <span class="value">
+          <span class="badge" [class]="'badge-priority-' + activeTask.priority">
+            {{ activeTask.priority === 'low' ? 'Baja' : activeTask.priority === 'medium' ? 'Media' : activeTask.priority === 'high' ? 'Alta' : 'Critica' }}
+          </span>
+        </span>
+      </div>
+
+      <div class="meta-item">
+        <span class="label">Responsable</span>
+        <span class="value" style="font-weight: 600; color: #ffffff;"> {{ activeTask.assignee }} </span>
+      </div>
+
+      <div class="meta-item">
+        <span class="label">Fecha Limite</span>
+        <span class="value">{{ activeTask.dueDate | date: 'dd/MM/yyyy'}}</span>
+      </div>
+
+      <div class="meta-item">
+        <span class="label">Creada el</span>
+        <span class="value"> {{ activeTask.createdAt | date: 'dd/MM/yyyy' }} </span>
+      </div>
+
+      <div class="meta-item">
+        <span class="label">Actualizada el</span>
+        <span class="value"> {{ activeTask.updatedAt | date: 'dd/MM/yyyy' }} </span>
+      </div>
+    </section>
+
+    <section class="description-section">
+      <h4>Descripcion</h4>
+      <p>{{ activeTask.description }}</p>
+    </section>
+
+    @if (activeTask.tags.length > 0) {
+      <section class="tags-section">
+        <span class="label">Etiquetas</span>
+        <div class="tags-container" aria-label="Etiquetas de la tarea">
+          @for (tag of activeTask.tags; track tag) {
+            <span class="tag">#{{ tag }}</span>
+          }
+        </div>
+      </section>
+    }
+  </article>
+}

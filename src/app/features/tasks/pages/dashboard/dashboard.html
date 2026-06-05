@@ -1,0 +1,159 @@
+<div class="dashboard-heade">
+  <h2>Sprint Board</h2>
+  <p style="margin-bottom: 0.75rem;">Gestión ágil de tareas del equipo de dearrollo.</p>
+</div>
+
+@defer (on immediate) {
+@let summary = store.summary();
+<div class="metrics-grid" role="region" aria-label="Metricas del Sprint">
+  <div class="metric-card">
+    <span class="metric-label">Total Tareas</span>
+    <span class="metric-value">{{ summary.total }}</span>
+  </div>
+  <div class="metric-card">
+    <span class="metric-label"> Tareas Pendientes </span>
+    <span class="metric-value">{{ summary.todo }}</span>
+  </div>
+  <div class="metric-card">
+    <span class="metric-label"> En Progresos </span>
+    <span class="metric-value">{{ summary.inProgress }}</span>
+  </div>
+  <div class="metric-card">
+    <span class="metric-label"> Bloqueadas </span>
+    <span class="metric-value">{{ summary.blocked }}</span>
+  </div>
+  <div class="metric-card">
+    <span class="metric-label"> Terminadas </span>
+    <span class="metric-value">{{ summary.done }}</span>
+  </div>
+  <div class="metric-card metric-completion">
+    <span class="metric-label"> Completado </span>
+    <span class="metric-value">{{ summary.completionPercentage }}%</span>
+    <div class="completion-bar-container" aria-hidden="true">
+      <div class="completion-bar-fill" [style.width.%]="summary.completionPercentage"></div>
+    </div>
+  </div>
+</div>
+} @placeholder {
+<div class="metrics-grid" aria-hidden="true">
+  @for (i of [1,2,3,4,5,6]; track i){
+  <div class="metric-card">
+    <div class="skeleton" style="height: 12px; width: 60px; margin-bottom: 8px;"></div>
+    <div class="skeleton" style="height: 32px; width: 40px;"></div>
+  </div>
+  }
+</div>
+}
+
+
+<div class="filters-bar" role="search" aria-label="Filtros de tareas">
+  <div class="search-wrapper">
+    <input type="text" [value]="store.search()" (input)="onSearchChange($event)"
+      placeholder="Buscar tareas por titulo, descripcion, responsable o tag..." aria-label="Buscar tareas" />
+  </div>
+
+  <div class="filter-selects">
+    <div class="select-wrapper">
+      <label for="status-filter">Estado:</label>
+      <select id="status-filter" [value]="store.status()" (change)="onStatusChange($event)"
+        aria-label="Filtrar por estado">
+        <option value="all">Todos</option>
+        <option value="todo">Pendiente (TO DO)</option>
+        <option value="in-progress">En Progreso</option>
+        <option value="blocked">Bloqueado</option>
+        <option value="done">Terminado</option>
+      </select>
+    </div>
+
+    <div class="select-wrapper">
+      <label for="priority-filter">Prioridad:</label>
+      <select id="priority-filter" [value]="store.priority()" (change)="onPriorityChange($event)"
+        aria-label="Filtrar por prioridad">
+        <option value="all">Todas</option>
+        <option value="low">Baja</option>
+        <option value="medium">Media</option>
+        <option value="high">Alta</option>
+        <option value="critical">Critica</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+@if (store.loading()) {
+  <div class="tasks-grid" aria-live="polite" aria-busy="true">
+    @for (skeleton of [1,2,3]; track skeleton) {
+      <div class="task-card" style="min-height: 200px;" aria-hidden="true">
+        <div class="skeleton" style="height: 14px; width: 80px; margin-bottom: 12px;"></div>
+        <div class="skeleton" style="height: 24px; width: 80%; margin-bottom: 8px;"></div>
+        <div class="skeleton" style="height: 14px; width: 95%; margin-bottom: 8px;"></div>
+        <div class="skeleton" style="height: 14px; width: 60%; margin-bottom: 16px;"></div>
+        <div class="skeleton" style="height: 20px; width: 100px; margin-top: auto;"></div>
+      </div>
+    }
+  </div>
+} @else if (store.error()) {
+  <div class="error-container" role="alert">
+    <h3>Ha ocurrido un problema</h3>
+    <p>{{ store.error() }}</p>
+    <button (click)="retryLoading()" class="btn btn-primary" aria-label="Reintentar cargar tareas">
+      Reintentar
+    </button>
+  </div>
+} @else if (store.filteredTasks().length === 0) {
+  <div class="empty-container" role="status">
+    <p>No se encontraron tareas con los filtros aplicados.</p>
+    <a routerLink="/tasks/new" class="btn btn-primary" aria-label="Crear primera tarea">
+      Crear Tarea
+    </a>
+  </div>
+} @else {
+  <div class="tasks-grid" role="list" aria-label="Lista de tareas del sprint">
+    @for (task of store.filteredTasks(); track task.id) {
+      <div
+      class="task-card"
+      [class]="'status-' + task.status"
+      role="listitem"
+      [attr.aria-labelledby]="'task-title-' + task.id"
+      >
+        <div class="task-header">
+          <span class="task-id">{{ task.id }}</span>
+          <span class="badge" [class]="'badge-' + task.status.replace('-','')">
+            {{ task.status ==='todo' ? 'Pendiente' : task.status === 'in-progress' ? 'En Progreso' : task.status == 'blocked' ? 'Bloqueada' : 'Finalizada' }}
+          </span>
+        </div>
+
+        <div class="task-body">
+          <h3 [id]="'task-title-' + task.id">{{ task.title }}</h3>
+          <p>{{ task.description }}</p>
+        </div>
+
+        @if (task.tags.length > 0) {
+          <div class="task-tags" aria-label="Etiquetas">
+            @for (tag of task.tags; track tag) {
+              <span class="tag">#{{ tag }}</span>
+            }
+          </div>
+        }
+
+        <div class="task-footer">
+          <div class="task-meta">
+            <span class="label">Responsable</span>
+            <span class="badge" [class]="'badge-priority-' + task.priority">
+              {{ task.priority === 'low' ? 'Baja' : task.priority === 'medium' ? 'Media' : task.priority === 'high' ? 'Alta' : 'Critica' }}
+            </span>
+          </div>
+        </div>
+
+        <div style="margin-top: 1rem; display: flex; gap: 0.5rem; width: 100%;">
+          <a [routerLink]="['/tasks', task.id]" class="btn btn-secondary" style="flex: 1; font-size: 0.8rem; padding: 0.4rem;" [attr.aria-label]="'Ver detalle de la tarea '+ task.id">
+            Ver Detalle
+          </a>
+          <a [routerLink]="['/tasks', task.id, 'edit']" class="btn btn-secondary" style="flex: 1; font-size: 0.8rem; padding: 0.4rem;" [attr.aria-label]="'Editar la tarea '+ task.id">
+            Editar
+          </a>
+        </div>
+
+      </div>
+    }
+  </div>
+}
